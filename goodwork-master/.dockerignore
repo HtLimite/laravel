@@ -1,0 +1,12 @@
+/public/storage
+/storage/*.key
+/.idea
+Homestead.json
+Homestead.yaml
+.phpintel
+npm-debug.log
+/.phpcomplete_extended
+.env.testing
+.env.dusk.local
+docker.env
+!Dockerfile

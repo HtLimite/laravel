@@ -1,0 +1,83 @@
+@tailwind base;
+
+html {
+  font-family: 'Montserrat', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+@tailwind components;
+
+/**
+ * Here you would add any of your custom component classes; stuff that you'd
+ * want loaded *before* the utilities so that the utilities could still
+ * override them.
+ *
+ * Example:
+ *
+ * .btn { ... }
+ * .form-input { ... }
+ *
+ * Or if using a preprocessor:
+ *
+ * @import "components/buttons";
+ * @import "components/forms";
+ */
+
+@tailwind utilities;
+
+/**
+ * Here you would add any custom utilities you need that don't come out of the
+ * box with Tailwind.
+ *
+ * Example :
+ *
+ * .bg-pattern-graph-paper { ... }
+ * .skew-45 { ... }
+ *
+ * Or if using a preprocessor..
+ *
+ * @import "utilities/background-patterns";
+ * @import "utilities/skew-transforms";
+ */
+
+ .resize-none {
+     resize: none;
+ }
+
+ .h-50-vh {
+     height: 50vh;
+ }
+
+ .h-60-vh {
+     height: 60vh;
+ }
+
+ .h-80-vh {
+     height: 80vh;
+ }
+
+ .checkbox {
+     @apply hidden;
+ }
+
+ .checkbox + label::before {
+     @apply inline-block w-5 h-5 mr-1 -mb-1 border-blue-300 border-2 rounded;
+     content: '';
+ }
+
+ .checkbox:checked + label::before {
+     @apply bg-indigo-500;
+     content: '';
+ }
+
+ .tab-sticky-top {
+     top: 3.25rem;
+ }
+
+ .message-box-max {
+     max-width: calc(100vw - 2rem);
+ }
+
+ [x-cloak] {
+     display: none;
+}

@@ -1,0 +1,143 @@
+<template>
+<div class="flex flex-col">
+  <div v-if="displayDate" class="w-full flex flex-row justify-center py-2 bg-gray-100">
+    <div class="text-gray-600 text-sm font-semibold text-center px-4">
+      {{ getDate(message.created_at) }}
+    </div>
+  </div>
+  <div class="flex flex-row text-gray-800 p-4 border-t"
+    :class="{'pb-16': last, '': (message.user.id === user.id)}">
+    <div class="flex flex-col items-center relative w-10 flex-shrink-0"
+      :class="[(message.user.id === user.id) ? 'flex-col-reverse justify-end' : '']">
+      <img :src="generateUrl(message.user.avatar)" :alt="message.user.name" class="w-10 h-10 rounded-full"
+        :class="[(message.user.id === user.id) ? 'order-1' : '']">
+      <div v-if="(message.user.id === user.id)" tabindex="0" @keypress.enter="toggleMessageMenu" @click="toggleMessageMenu" v-click-outside="hideMessageMenu" class="cursor-pointer">
+        <font-awesome-icon :icon="faEllipsisH" class="text-gray-500"></font-awesome-icon>
+      </div>
+      <div v-if="(message.user.id === user.id) && dropdownMenuShown" class="absolute rounded shadow-xl top-0 mt-16 mr-2 py-2 text-white bg-indigo-600 left-0 z-10">
+        <div tabindex="0" @click="editMessage()" @keydown.enter="editMessage()" class="cursor-pointer hover:text-indigo-600 hover:bg-white px-4 py-2">
+          Edit
+        </div>
+        <div tabindex="0" @click="deleteMessage()" @keydown.enter="deleteMessage()" class="cursor-pointer hover:text-indigo-600 hover:bg-white px-4 py-2">
+          Delete
+        </div>
+      </div>
+    </div>
+    <div class="ml-6">
+      <div class="text-xs flex flex-row">
+        <div class="pr-1 font-medium" :class="[(message.user.id === user.id) ? 'text-pink-500' : 'text-blue-500']">
+          {{ message.user.name }}
+        </div>
+        <div>•</div>
+        <div class="pl-1">
+          {{ getTime(message.created_at) }}
+        </div>
+      </div>
+      <div  class="rounded-lg py-3 pt-0 -mt-2 leading-none text-gray-800 text-base break-all whitespace-pre-line"
+        :class="[(message.user_id === user.id) ? 'rounded-tr-none' : 'rounded-tl-none']" v-linkify >
+        {{ message.body }}
+      </div>
+    </div>
+  </div>
+</div>
+</template>
+
+<script>
+import { mapActions } from 'vuex'
+import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
+
+let day = null
+export default {
+  props: {
+    message: {
+      required: true,
+      type: Object
+    },
+    user: {
+      required: true,
+      type: Object
+    },
+    index: {
+      required: true,
+      type: Number
+    },
+    last: {
+      required: true,
+      type: Boolean
+    },
+    direct: {
+      required: false,
+      type: Boolean,
+      default: false
+    }
+  },
+  data: () => ({
+    dropdownMenuShown: false,
+    faEllipsisH
+  }),
+
+  computed: {
+    displayDate () {
+      return this.showDate(this.message.created_at)
+    }
+  },
+
+  methods: {
+    ...mapActions([
+      'showNotification',
+    ]),
+    editMessage() {
+        this.$emit('edit', this.index)
+    },
+    updateMessage() {
+      let api = this.direct ? 'direct-messages' : 'messages'
+      axios.put(`/${api}/${this.message.id}`)
+        .then((response) => {
+          this.$emit('edited', this.index)
+          this.dropdownMenuShown = false
+          this.showNotification({type: response.data.status, message: response.data.message})
+        })
+        .catch((error) => {
+          this.dropdownMenuShown = false
+          this.showNotification({type: error.response.data.status, message: error.response.data.message})
+        })
+    },
+    deleteMessage () {
+      let api = this.direct ? 'direct-messages' : 'messages'
+      axios.delete(`/${api}/${this.message.id}`)
+        .then((response) => {
+          this.$emit('deleted', this.index)
+          this.dropdownMenuShown = false
+          this.showNotification({type: response.data.status, message: response.data.message})
+        })
+        .catch((error) => {
+          this.dropdownMenuShown = false
+          this.showNotification({type: error.response.data.status, message: error.response.data.message})
+        })
+    },
+    toggleMessageMenu () {
+      this.dropdownMenuShown = !this.dropdownMenuShown
+    },
+    hideMessageMenu () {
+      this.dropdownMenuShown = false
+    },
+    showDate (createdAt) {
+      let createdDay = luxon.DateTime.fromISO(createdAt).toLocaleString(luxon.DateTime.DATE_MED)
+      if (day === null || day !== createdDay) {
+        day = createdDay
+        return true
+      }
+      return false
+    },
+    getDate (createdAt) {
+      return luxon.DateTime.fromISO(createdAt).toLocaleString(luxon.DateTime.DATE_MED)
+    },
+    getTime (createdAt) {
+      if (this.user.timezone) {
+        return luxon.DateTime.fromISO(createdAt).setZone(this.user.timezone).toLocaleString(luxon.DateTime.TIME_SIMPLE)
+      }
+      return luxon.DateTime.fromISO(createdAt).setZone('local').toLocaleString(luxon.DateTime.TIME_SIMPLE)
+    }
+  }
+}
+</script>

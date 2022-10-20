@@ -1,0 +1,28 @@
+<?php
+
+return [
+    'Profile'                                                  => 'Профиль',
+    'Account'                                                  => 'Учетная запись',
+    'Username'                                                 => 'Имя пользователя',
+    'Name'                                                     => 'Имя',
+    'Designation'                                              => 'Должность',
+    'Title'                                                    => 'Наименование в ' . config('app.company_name'),
+    'Short Bio'                                                => 'Коротко о себе',
+    'Location'                                                 => 'Местоположение',
+    'Time Zone'                                                => 'Часовой пояс',
+    'First Day of the Week'                                    => 'Первый день недели',
+    'Language'                                                 => 'Язык',
+    'Change Your Avatar'                                       => 'Изменить аватар',
+    'Email'                                                    => 'Email',
+    'Current Password'                                         => 'Текущий пароль',
+    'New Password'                                             => 'Новый пароль',
+    'Confirm Password'                                         => 'Подтвердить пароль',
+    'Update'                                                   => 'Обновить',
+    'Delete Account'                                           => 'Удалить учетную запись',
+    'Preferred Language'                                       => 'Предпочитаемый язык',
+    'Notification Settings'                                    => 'Настройки уведомлений',
+    'Email Notifications'                                      => 'Email уведомления',
+    'Send email on direct messages'                            => 'Отправить email при личных сообщениях',
+    'Send email on mention in tasks, discussions and comments' => 'Отправить email при упоминаниях в задачах, обсуждениях и комментариях',
+    'Member of'                                                => 'Участник',
+];

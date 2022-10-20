@@ -1,0 +1,28 @@
+name: Format (PHP)
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - '**.php'
+      - '!vendor/**'
+
+jobs:
+  php-cs-fixer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install
+        run: composer install
+
+      - name: Run php-cs-fixer
+        run: composer cs-fix
+
+      - uses: stefanzweifel/git-auto-commit-action@v2.3.0
+        with:
+          commit_message: Apply php-cs-fixer changes
+          branch: dev
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
